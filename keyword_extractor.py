@@ -12,6 +12,18 @@ try:
 except LookupError:
     nltk.download('punkt', quiet=True)
 
+# Download additional tokenizer tables introduced in newer NLTK versions
+try:
+    nltk_version = tuple(int(x) for x in nltk.__version__.split('.')[:2])
+except ValueError:
+    nltk_version = (0, 0)
+
+if nltk_version >= (3, 8):
+    try:
+        nltk.data.find('tokenizers/punkt_tab')
+    except LookupError:
+        nltk.download('punkt_tab', quiet=True)
+
 try:
     nltk.data.find('corpora/stopwords')
 except LookupError:

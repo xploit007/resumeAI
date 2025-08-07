@@ -31,6 +31,8 @@ pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 ```
 
+> The application will download required NLTK tokenizers (`punkt` and `punkt_tab` for NLTK 3.8+) at runtime if they are missing. Ensure internet access for the first execution.
+
 4. Install and run a local language model using [Ollama](https://ollama.com):
 ```bash
 curl -fsSL https://ollama.com/install.sh | sh

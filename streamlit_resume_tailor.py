@@ -5,7 +5,6 @@ import json
 import io
 from datetime import datetime
 from dotenv import load_dotenv
-import openai
 from resume_parser import ResumeParser
 from resume_generator import ResumeGenerator
 from keyword_extractor import KeywordExtractor
@@ -19,14 +18,11 @@ class ResumeCustomizer:
         self.generator = ResumeGenerator()
         self.keyword_extractor = KeywordExtractor()
 
-    def process_resume_tailoring(self, resume_content, job_description, openai_key):
+    def process_resume_tailoring(self, resume_content, job_description, model_name):
         """Main processing function for resume tailoring"""
 
-        # Set OpenAI API key
-        openai.api_key = openai_key
-
-        # Get model from environment, with a fallback
-        model_name = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+        # Use model name from argument or environment
+        model_name = model_name or os.getenv("MODEL_NAME", "gpt-oss:20b")
 
         # Extract keywords and context from job description
         job_analysis = self.keyword_extractor.analyze_job_description(job_description)
@@ -38,7 +34,6 @@ class ResumeCustomizer:
         tailored_content = self.generator.tailor_resume(
             parsed_resume,
             job_analysis,
-            openai_key,
             model_name=model_name
         )
 
@@ -54,18 +49,21 @@ def main():
     st.title("🎯 AI-Powered Resume Tailoring Tool")
     st.markdown("Upload your resume and job description to get a perfectly tailored resume!")
 
-    # Sidebar for OpenAI API key
+    # Sidebar for model configuration
     with st.sidebar:
         st.header("Configuration")
-        openai_key = st.text_input("OpenAI API Key", type="password", 
-                                 help="Enter your OpenAI API key to enable AI features")
+        model_name = st.text_input(
+            "Model Name",
+            value="gpt-oss:20b",
+            help="Name of the local model served via Ollama"
+        )
 
         st.markdown("---")
         st.markdown("### Instructions")
         st.markdown("""
-        1. Upload your current resume (.docx or .txt)
-        2. Upload job description (.pdf, .txt) or paste text
-        3. Enter your OpenAI API key
+        1. Install and run [Ollama](https://ollama.com)
+        2. Pull the desired model, e.g. `ollama pull gpt-oss:20b`
+        3. Upload your resume and job description
         4. Click 'Tailor Resume' to generate optimized version
         """)
 
@@ -107,10 +105,6 @@ def main():
 
     # Processing section
     if st.button("🚀 Tailor Resume", type="primary", use_container_width=True):
-        if not openai_key:
-            st.error("Please provide your OpenAI API key in the sidebar")
-            return
-
         if not resume_file:
             st.error("Please upload your resume")
             return
@@ -126,7 +120,7 @@ def main():
 
                 # Process the tailoring
                 result = customizer.process_resume_tailoring(
-                    resume_file, job_description, openai_key
+                    resume_file, job_description, model_name
                 )
 
                 # Display results
@@ -166,7 +160,7 @@ def main():
 
             except Exception as e:
                 st.error(f"An error occurred: {str(e)}")
-                st.error("Please check your API key and try again")
+                st.error("Please ensure your local model is running and try again")
 
 if __name__ == "__main__":
     main()

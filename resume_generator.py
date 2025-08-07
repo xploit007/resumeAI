@@ -1,6 +1,5 @@
 
-import openai
-import json
+import requests
 from docx import Document
 from docx.shared import Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -11,22 +10,16 @@ import re
 class ResumeGenerator:
     """Generates tailored resume content and documents"""
 
-    def __init__(self):
-        self.openai_client = None
-        self.model_name = "gpt-3.5-turbo"
-
-    def set_openai_key(self, api_key: str):
-        """Set OpenAI API key"""
-        openai.api_key = api_key
-        self.openai_client = openai.OpenAI(api_key=api_key)
+    def __init__(self, base_url: str = "http://localhost:11434/api/generate", model_name: str = "gpt-oss:20b"):
+        self.base_url = base_url
+        self.model_name = model_name
 
     def tailor_resume(self, parsed_resume: Dict[str, Any],
-                     job_analysis: Dict[str, Any], api_key: str,
-                     model_name: str = "gpt-3.5-turbo") -> Dict[str, Any]:
+                     job_analysis: Dict[str, Any],
+                     model_name: str = "gpt-oss:20b") -> Dict[str, Any]:
         """Main function to tailor resume content"""
 
         self.model_name = model_name
-        self.set_openai_key(api_key)
 
         # Generate key themes analysis
         key_themes = self._generate_key_themes(job_analysis)
@@ -59,6 +52,17 @@ class ResumeGenerator:
             'docx_content': docx_content
         }
 
+    def _call_model(self, prompt: str) -> str:
+        """Call the local language model via HTTP."""
+        try:
+            payload = {"model": self.model_name, "prompt": prompt, "stream": False}
+            response = requests.post(self.base_url, json=payload, timeout=60)
+            response.raise_for_status()
+            data = response.json()
+            return data.get("response", "").strip()
+        except Exception as e:
+            return f"Error communicating with model: {e}"
+
     def _generate_key_themes(self, job_analysis: Dict[str, Any]) -> str:
         """Generate key themes analysis from job description"""
 
@@ -79,21 +83,10 @@ class ResumeGenerator:
         Provide a 2-3 sentence summary focusing on what makes this role unique.
         """
 
-        try:
-            response = self.openai_client.chat.completions.create(
-                model=self.model_name,
-                messages=[
-                    {"role": "system", "content": "You are an expert resume analyst who helps job seekers understand job requirements."},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=200,
-                temperature=0.7
-            )
+        system_prompt = "You are an expert resume analyst who helps job seekers understand job requirements."
+        full_prompt = f"{system_prompt}\n{prompt}"
 
-            return response.choices[0].message.content.strip()
-
-        except Exception as e:
-            return f"Error generating key themes: {str(e)}"
+        return self._call_model(full_prompt)
 
     def _tailor_experience_section(self, experiences: List[Dict[str, Any]], 
                                  job_analysis: Dict[str, Any]) -> str:
@@ -162,22 +155,17 @@ class ResumeGenerator:
         Provide 3-4 strong bullets that show you already have experience doing what this job requires:
         """
 
-        try:
-            response = self.openai_client.chat.completions.create(
-                model=self.model_name,
-                messages=[
-                    {"role": "system", "content": "You are an expert resume writer who specializes in tailoring experience bullets to match specific job requirements while maintaining truthfulness."},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=400,
-                temperature=0.8
-            )
+        system_prompt = (
+            "You are an expert resume writer who specializes in tailoring experience bullets "
+            "to match specific job requirements while maintaining truthfulness."
+        )
+        full_prompt = f"{system_prompt}\n{prompt}"
 
-            return response.choices[0].message.content.strip()
-
-        except Exception as e:
-            # Fallback to original bullets if API fails
+        result = self._call_model(full_prompt)
+        if result.startswith("Error"):
+            # Fallback to original bullets if model call fails
             return "\n".join(['• ' + bullet for bullet in original_bullets])
+        return result
 
     def _generate_tailored_projects(self, parsed_resume: Dict[str, Any], 
                                   job_analysis: Dict[str, Any]) -> str:
@@ -219,21 +207,13 @@ class ResumeGenerator:
         Generate 1-2 compelling projects:
         """
 
-        try:
-            response = self.openai_client.chat.completions.create(
-                model=self.model_name,
-                messages=[
-                    {"role": "system", "content": "You are an expert resume writer who creates realistic, relevant project descriptions that align with job requirements."},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=500,
-                temperature=0.8
-            )
+        system_prompt = (
+            "You are an expert resume writer who creates realistic, relevant project descriptions "
+            "that align with job requirements."
+        )
+        full_prompt = f"{system_prompt}\n{prompt}"
 
-            return response.choices[0].message.content.strip()
-
-        except Exception as e:
-            return f"Error generating projects: {str(e)}"
+        return self._call_model(full_prompt)
 
     def _extract_tools_from_text(self, text: str) -> List[str]:
         """Extract tools and technologies mentioned in resume text"""

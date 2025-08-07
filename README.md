@@ -6,7 +6,7 @@ A comprehensive Streamlit application that uses AI to tailor resumes to specific
 
 - **Resume Upload**: Support for .docx, .txt, and .pdf resume formats
 - **Job Description Analysis**: Intelligent parsing of job requirements and keywords
-- **AI-Powered Tailoring**: Uses OpenAI GPT models to rewrite experience bullets and generate relevant projects
+- **AI-Powered Tailoring**: Uses local open-source GPT models (via [Ollama](https://ollama.com)) to rewrite experience bullets and generate relevant projects
 - **Keyword Optimization**: Identifies missing keywords and suggests improvements for ATS systems
 - **Document Generation**: Creates downloadable Word documents with tailored content
 - **Multiple Input Methods**: Upload files or paste text directly
@@ -31,10 +31,10 @@ pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 ```
 
-4. Set up environment variables:
+4. Install and run a local language model using [Ollama](https://ollama.com):
 ```bash
-cp .env.template .env
-# Edit .env and add your OpenAI API key
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull gpt-oss:20b
 ```
 
 ### Option 2: Using Setup.py
@@ -56,18 +56,14 @@ streamlit run streamlit_resume_tailor.py
 2. Open your browser to `http://localhost:8501`
 
 3. Follow the on-screen instructions:
-   - Enter your OpenAI API key in the sidebar
+   - Ensure your local model (e.g., `gpt-oss:20b`) is running via Ollama
    - Upload your resume (.docx or .txt format)
    - Upload job description or paste the text
    - Click "Tailor Resume" to generate optimized content
 
 ### Configuration
 
-Create a `.env` file with your OpenAI API key:
-```
-OPENAI_API_KEY=your_api_key_here
-OPENAI_MODEL=gpt-3.5-turbo
-```
+The application uses a local model served by Ollama. You can override the default model name by setting the `MODEL_NAME` environment variable.
 
 ## Project Structure
 
@@ -97,7 +93,7 @@ resume-tailoring-tool/
 - Identifies industry and job level context
 
 ### ResumeGenerator
-- Uses OpenAI GPT models for content generation
+- Uses local GPT models via Ollama for content generation
 - Tailors experience bullets to match job requirements
 - Generates relevant projects based on job context
 - Creates formatted Word documents for download
@@ -132,7 +128,7 @@ resume-tailoring-tool/
 2. Visit [share.streamlit.io](https://share.streamlit.io)
 3. Connect your GitHub repository
 4. Deploy with one click
-5. Add your OpenAI API key in Streamlit Cloud secrets
+5. Ensure the deployment environment can access the Ollama service and required model
 
 ### Other Platforms
 
@@ -183,10 +179,9 @@ def _extract_domain_specific_keywords(self, text):
    python -m spacy download en_core_web_sm
    ```
 
-2. **OpenAI API Errors**
-   - Verify your API key is correct
-   - Check your OpenAI account has sufficient credits
-   - Ensure you're using a supported model
+2. **Ollama Model Errors**
+   - Verify the Ollama service is running
+   - Ensure the requested model is installed (e.g., `ollama pull gpt-oss:20b`)
 
 3. **File Upload Issues**
    - Ensure files are in supported formats (.docx, .txt, .pdf)
@@ -216,7 +211,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 
-- OpenAI for GPT models
+- Ollama and the open-source model community
 - spaCy and NLTK for natural language processing
 - Streamlit for the web framework
 - python-docx for Word document manipulation
@@ -237,4 +232,4 @@ For support, please open an issue on GitHub or contact [your-email@example.com].
 
 ---
 
-**Note**: This tool requires an OpenAI API key to function. Make sure to keep your API key secure and never commit it to version control.
+**Note**: This tool requires a locally running language model (e.g., via Ollama). Ensure the service is running and the appropriate model is installed.

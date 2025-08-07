@@ -1,5 +1,4 @@
 
-import openai
 import re
 import spacy
 import nltk

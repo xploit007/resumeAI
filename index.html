@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Tailor Pro - AI-Powered Resume Optimization</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>Resume Tailor Pro</h1>
+                    <p>AI-Powered Resume Optimization</p>
+                </div>
+                <nav class="nav">
+                    <a href="#features">Features</a>
+                    <a href="#tool">Try Tool</a>
+                    <a href="#about">About</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2>Tailor Your Resume for Every Job Application</h2>
+                <p class="hero-description">
+                    Transform your generic resume into a targeted, ATS-optimized document that highlights relevant experience and gets you interviews.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">3x</span>
+                        <span class="stat-label">More Interviews</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">85%</span>
+                        <span class="stat-label">ATS Pass Rate</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">< 5min</span>
+                        <span class="stat-label">Processing Time</span>
+                    </div>
+                </div>
+                <button class="btn btn--primary btn--lg" onclick="scrollToTool()">Start Tailoring Now</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h3 class="section-title">Powerful Features for Professional Results</h3>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h4>Smart Targeting</h4>
+                    <p>AI analyzes job requirements to tailor your experience for maximum impact</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h4>ATS Optimization</h4>
+                    <p>Ensures your resume passes Applicant Tracking Systems with right keywords</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h4>Keyword Analysis</h4>
+                    <p>Identifies missing skills and suggests improvements for better matching</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h4>Professional Format</h4>
+                    <p>Maintains clean, professional formatting while optimizing content</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h4>Instant Results</h4>
+                    <p>Get tailored resume content in minutes, not hours of manual work</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💼</div>
+                    <h4>Industry Specific</h4>
+                    <p>Adapts content based on target industry and role requirements</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Tool Interface -->
+    <section id="tool" class="tool-section">
+        <div class="container">
+            <h3 class="section-title">Tailor Your Resume</h3>
+            
+            <div class="tool-interface">
+                <!-- Input Section -->
+                <div class="input-section" id="inputSection">
+                    <div class="input-grid">
+                        <!-- Resume Input -->
+                        <div class="input-column">
+                            <div class="card">
+                                <div class="card__body">
+                                    <h4 class="input-title">📄 Your Current Resume</h4>
+                                    <div class="file-upload-area" id="resumeUpload">
+                                        <div class="file-upload-content">
+                                            <div class="file-upload-icon">📁</div>
+                                            <p>Drop your resume file here or click to browse</p>
+                                            <p class="file-upload-hint">Supports .docx, .txt files</p>
+                                            <input type="file" id="resumeFile" accept=".docx,.txt" hidden>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Or paste your resume text:</label>
+                                        <textarea id="resumeText" class="form-control" rows="8" placeholder="Paste your resume content here..."></textarea>
+                                    </div>
+                                    <button class="btn btn--outline btn--sm" onclick="loadSampleResume()">Use Sample Resume</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Job Description Input -->
+                        <div class="input-column">
+                            <div class="card">
+                                <div class="card__body">
+                                    <h4 class="input-title">🎯 Target Job Description</h4>
+                                    <div class="file-upload-area" id="jobUpload">
+                                        <div class="file-upload-content">
+                                            <div class="file-upload-icon">📋</div>
+                                            <p>Drop job description file here or click to browse</p>
+                                            <p class="file-upload-hint">Supports .pdf, .txt files</p>
+                                            <input type="file" id="jobFile" accept=".pdf,.txt" hidden>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Or paste job description:</label>
+                                        <textarea id="jobText" class="form-control" rows="8" placeholder="Paste the job description here..."></textarea>
+                                    </div>
+                                    <button class="btn btn--outline btn--sm" onclick="loadSampleJob()">Use Sample Job</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuration Section -->
+                    <div class="config-section">
+                        <div class="card">
+                            <div class="card__body">
+                                <h4 class="input-title">⚙️ Configuration</h4>
+                                <div class="config-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">OpenAI API Key (Optional for Demo)</label>
+                                        <input type="password" id="apiKey" class="form-control" placeholder="sk-...">
+                                        <small class="form-hint">Leave empty to use demo mode with sample data</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Output Format</label>
+                                        <select id="outputFormat" class="form-control">
+                                            <option value="word">Word Document (.docx)</option>
+                                            <option value="text">Plain Text</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Button -->
+                    <div class="action-section">
+                        <button id="tailorBtn" class="btn btn--primary btn--lg btn--full-width" onclick="startTailoring()">
+                            🚀 Tailor My Resume
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Processing Section -->
+                <div class="processing-section hidden" id="processingSection">
+                    <div class="card">
+                        <div class="card__body">
+                            <div class="processing-content">
+                                <div class="processing-spinner"></div>
+                                <h4>Analyzing and Tailoring Your Resume...</h4>
+                                <div class="progress-steps">
+                                    <div class="progress-step active" id="step1">📄 Parsing resume content</div>
+                                    <div class="progress-step" id="step2">🔍 Analyzing job requirements</div>
+                                    <div class="progress-step" id="step3">🎯 Matching skills and experience</div>
+                                    <div class="progress-step" id="step4">✍️ Rewriting experience bullets</div>
+                                    <div class="progress-step" id="step5">🎓 Generating relevant projects</div>
+                                    <div class="progress-step" id="step6">✅ Finalizing tailored resume</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Section -->
+                <div class="results-section hidden" id="resultsSection">
+                    <div class="results-header">
+                        <h4>🎉 Your Tailored Resume is Ready!</h4>
+                        <div class="results-actions">
+                            <button class="btn btn--primary" onclick="downloadResume()">📥 Download Resume</button>
+                            <button class="btn btn--outline" onclick="startOver()">🔄 Start Over</button>
+                        </div>
+                    </div>
+
+                    <!-- Results Tabs -->
+                    <div class="tabs">
+                        <div class="tab-buttons">
+                            <button class="tab-button active" onclick="switchTab('themes')">🎯 Key Themes</button>
+                            <button class="tab-button" onclick="switchTab('experience')">💼 Experience</button>
+                            <button class="tab-button" onclick="switchTab('projects')">🎓 Projects</button>
+                            <button class="tab-button" onclick="switchTab('keywords')">🔑 Keywords</button>
+                        </div>
+
+                        <div class="tab-content">
+                            <!-- Themes Tab -->
+                            <div class="tab-panel active" id="themesPanel">
+                                <div class="card">
+                                    <div class="card__body">
+                                        <h5>✅ Key Themes From the Role & Company:</h5>
+                                        <p id="keyThemes"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Experience Tab -->
+                            <div class="tab-panel" id="experiencePanel">
+                                <div class="card">
+                                    <div class="card__body">
+                                        <h5>🛠 Tailored Experience Content:</h5>
+                                        <div id="experienceContent" class="content-section"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Projects Tab -->
+                            <div class="tab-panel" id="projectsPanel">
+                                <div class="card">
+                                    <div class="card__body">
+                                        <h5>🎓 Tailored Projects:</h5>
+                                        <div id="projectsContent" class="content-section"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Keywords Tab -->
+                            <div class="tab-panel" id="keywordsPanel">
+                                <div class="card">
+                                    <div class="card__body">
+                                        <h5>🧩 Extra Keywords to Add to Skills Section:</h5>
+                                        <div id="keywordsContent" class="keywords-list"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h3 class="section-title">How It Works</h3>
+            <div class="steps-grid">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h4>Upload & Input</h4>
+                    <p>Upload your resume and paste the target job description</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h4>AI Analysis</h4>
+                    <p>Our AI analyzes job requirements and identifies key skills and competencies</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h4>Smart Tailoring</h4>
+                    <p>Experience bullets are rewritten to highlight relevant skills and achievements</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h4>Download & Apply</h4>
+                    <p>Get your optimized resume ready for submission and track your success</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Resume Tailor Pro</h4>
+                    <p>Empowering job seekers with AI-driven resume optimization.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <a href="#" target="_blank">Documentation</a>
+                    <a href="#" target="_blank">GitHub Repository</a>
+                    <a href="#" target="_blank">API Reference</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <a href="#" target="_blank">Contact Us</a>
+                    <a href="#" target="_blank">Help Center</a>
+                    <a href="#" target="_blank">Community</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Resume Tailor Pro. Built with modern web technologies.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
